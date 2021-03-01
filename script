@@ -1,0 +1,226 @@
+#Infame Code in YouTube
+import pygame
+from random import choice
+
+try:
+    pygame.init()
+except:
+    print("Módulo não instalado corretamente!")
+
+preto = (0, 0, 0)
+branco = (255, 255, 255)
+vermelho = (255, 0, 0)
+verde = (0, 255, 0)
+ciano = (255, 255, 138)
+
+valores = (5, -5)
+rand_vel_x = choice(valores)
+rand_vel_y = choice(valores)
+
+largura = 320
+altura = 240
+tamanho = 10
+comp = 4
+
+pygame.display.set_caption("Ping Pong by jp")
+fundo = pygame.display.set_mode((largura, altura))
+relogio = pygame.time.Clock()
+
+traco1_x = 0
+traco1_y = altura/2
+velocidade1_y = 0
+
+traco2_x = 320-tamanho
+traco2_y = altura/2
+velocidade2_y = 0
+
+bola_x = largura/2
+bola_y = altura/2
+vbol_x = 0
+vbol_y = 0
+
+
+def player1(barra):
+    for pos in barra:
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1], tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1], tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]+10, tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]-10, tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]+20, tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]-20, tamanho, tamanho])
+
+
+def player2(barra):
+    for pos in barra:
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1], tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]+10, tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]-10, tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]+20, tamanho, tamanho])
+        pygame.draw.rect(fundo, preto, [pos[0], pos[1]-20, tamanho, tamanho])
+
+def texto(msg, cor, tam, x, y):
+    font = pygame.font.SysFont(None, tam)
+    txt = font.render(msg, True, cor)
+    fundo.blit(txt, [x, y])
+
+
+sair = False
+fimdejogo = False
+Barra1_Total = []
+Barra2_Total = []
+while sair is False:
+    fundo.fill(ciano)
+    while fimdejogo is True:
+        fundo.fill(ciano)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                fimdejogo = False
+                sair = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_c:
+                    valores = (5, -5)
+                    rand_vel_x = choice(valores)
+                    rand_vel_y = choice(valores)
+
+                    traco1_x = 0
+                    traco1_y = altura / 2
+                    velocidade1_y = 0
+
+                    traco2_x = 320 - tamanho
+                    traco2_y = altura / 2
+                    velocidade2_y = 0
+
+                    bola_x = largura / 2
+                    bola_y = altura / 2
+                    vbol_x = 0
+                    vbol_y = 0
+
+                    sair = False
+                    fimdejogo = False
+                    Barra1_Total = []
+                    Barra2_Total = []
+                elif event.key == pygame.K_s:
+                    sair = True
+                    fimdejogo = False
+
+        texto("FIM DE JOGO", vermelho, 50, 55, 35)
+        texto("Continuar(c)", preto, 25, 110, 150)
+        texto("Sair(s)", preto, 25, 135, 170)
+        pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sair = True
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                traco1_y += -10
+            if event.key == pygame.K_s:
+                traco1_y += 10
+
+            if event.key == pygame.K_UP:
+                traco2_y += -10
+            if event.key == pygame.K_DOWN:
+                traco2_y += 10
+            if event.key == pygame.K_SPACE:
+                vbol_x = rand_vel_x
+                vbol_y = rand_vel_y
+            if event.key == pygame.K_g:
+                fimdejogo = True
+
+
+    bola_x += vbol_x
+    bola_y += vbol_y
+
+
+    Barra_Inicio1 = []
+    Barra_Inicio1.append(traco1_x)
+    Barra_Inicio1.append(traco1_y)
+    Barra1_Total.append(Barra_Inicio1)
+
+    Barra_Inicio2 = []
+    Barra_Inicio2.append(traco2_x)
+    Barra_Inicio2.append(traco2_y)
+    Barra2_Total.append(Barra_Inicio2)
+
+    if traco1_y == (0 - tamanho):
+        velocidade1_y = 10
+        traco1_y += velocidade1_y
+    elif traco1_y == altura:
+        velocidade1_y = -10
+        traco1_y += velocidade1_y
+
+    if traco2_y == (0 - tamanho):
+        velocidade2_y = 10
+        traco2_y += velocidade2_y
+    elif traco2_y == altura:
+        velocidade2_y = -10
+        traco2_y += velocidade2_y
+
+#arrumar as condicionais aninhadas pra arrumar os valores
+    if bola_y == 0 and bola_x <= largura/2:    #lado esquerdo de cima
+        if vbol_x == -5 and vbol_y == -5:
+            vbol_x = -5
+            vbol_y = 5
+        elif vbol_x == 5 and vbol_y == -5:
+            vbol_x = 5
+            vbol_y = 5
+        else:
+            vbol_x = 5
+            vbol_y = -5
+
+    elif bola_y == 0 and bola_x >= largura/2:   #lado direito de cima
+        if vbol_x == 5 and vbol_y == -5:
+            vbol_x = 5
+            vbol_y = 5
+        else:
+            vbol_x = -5
+            vbol_y = 5
+
+    elif bola_y == altura-10 and bola_x >= largura/2: #lado direito debaixo
+        if vbol_x == 5 and vbol_y == -5:
+            vbol_x = -5
+            vbol_y = 5
+        elif vbol_x == -5 and vbol_y == 5:
+            vbol_x = -5
+            vbol_y = -5
+        else:
+            vbol_x = 5
+            vbol_y = -5
+        # vbol_x = 5
+        # vbol_y = -5
+
+    elif bola_y == altura-10 and bola_x <= largura/2: #lado esquerdo debaixo
+        if vbol_x == 5 and vbol_y == 5:
+            vbol_x = 5
+            vbol_y = -5
+        else:
+            vbol_x = -5
+            vbol_y = -5
+
+
+    if bola_x < -10:
+        fimdejogo = True
+    elif bola_x == largura:
+        fimdejogo = True
+
+
+    if bola_x == 10 and bola_y == Barra_Inicio1[1] or bola_x == 10 and bola_y == Barra_Inicio1[1]+10 or bola_x == 10 and bola_y == Barra_Inicio1[1]+20 or bola_x == 10 and bola_y == Barra_Inicio1[1]-10 or bola_x == 10 and bola_y == Barra_Inicio1[1]-20:
+        vbol_x = -(vbol_x)
+        vbol_y = +(vbol_y)
+
+
+    elif bola_x == 300 and bola_y == Barra_Inicio2[1] or bola_x == 300 and bola_y == Barra_Inicio2[1]+10 or bola_x == 300 and bola_y == Barra_Inicio2[1]+20 or bola_x == 300 and bola_y == Barra_Inicio2[1]-10 or bola_x == 300 and bola_y == Barra_Inicio2[1]-20:
+        vbol_x = -(vbol_x)
+        vbol_y = +(vbol_y)
+
+    player1(Barra1_Total)
+    player2(Barra2_Total)
+    pygame.draw.rect(fundo, verde, [bola_x, bola_y, tamanho, tamanho])
+
+    #velocidade da bola mostrando
+    relogio.tick(18)
+    print(vbol_x, vbol_y)
+    Barra1_Total.clear()
+    Barra2_Total.clear()
+    pygame.display.update()
+
+pygame.quit()
